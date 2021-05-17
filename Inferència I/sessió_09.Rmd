@@ -60,11 +60,20 @@ summary(fit)
 ```
 
 Així doncs, la fòrmula del model és: 
+
 <center>
 Coordinació =
 `r round(fit$coefficients[1], 3)` + 
 `r round(fit$coefficients[2], 3)` * ln(Sesiones) + Error
+
 </center>
+
+Gràficament, la línia roja és tant la línia de regressió (que segueix la fòrmula anterior) com la predicció en mitjana de la variable depenent a partir de la explicativa.
+
+```{r fig.asp = .75, fig.align="center"}
+with(data=ex1, plot(x = ln.sesiones, y = coordinacion))
+abline(fit, col=2)
+```
 
 ## Homogeneïtat de poblacions
 
@@ -108,12 +117,18 @@ qchisq(1-alpha, df = (NROW(obs)-1)*(NCOL(obs)-1))
 
 que compara las frecuencias observadas $O_i$ con las frecuencias teóricas $T_i$ exced de 5.991 y de 9.210, que son los valores críticos de una chi-cuadrado con (3-1)*(2-1) grados de libertad, lo que nos lleva a rechazar la hipótesis de homogeneidad en la distribución de tipos sangíneos entre hombres y mujeres.
 
+Utilitzant funcións d'R:
+```{r fig.asp = .75, fig.align="center", results="hold"}
+chisq.test(obs)
+```
+
+
 ### Exemple 2
 La tabla siguiente proporciona los alumnos matriculados por sexos en una muestra de facultades de ciencias económicas y empresariales en el curso 85/86. ¿Es distinta la proporción de mujeres en las distintas universiades?
 
 ```{r fig.asp = .75, fig.align="center"}
 (obs <- matrix(c(1394, 1558, 2142, 6854, 5583, 10458,
-                  515,  594,  609, 2140, 2309, 3919), byrow = TRUE, nrow = 2,
+                  515,  594,  609, 2140, 2309,  3919), byrow = TRUE, nrow = 2,
               dimnames = list( c("Hombres", "Mujeres"),
                                c("Alcalá", "ALicante", "Barna A", "Barna C", "Mad A", "Mad C"))) )
 ```
@@ -144,4 +159,8 @@ qchisq(1-alpha, df = (NROW(obs)-1)*(NCOL(obs)-1))
 
 y, si la hipótesis de homogeneidad es cierta, correponde a una $\chi^2$ con 5 ( (6-1)*(2-1) ) grados de libertad. Como este valor no puede venir de dicha distribución (valor muy extremo), rechazamos la hipótesis de homogeneidad y concluimos que hay diferencias significativas entre las universidades. En las universidades de Barcelona, la proporción de Mujeres es algo menor (0.23) que en el resto (0.27).
 
+Utilitzant funcións d'R:
+```{r fig.asp = .75, fig.align="center", results="hold"}
+chisq.test(obs)
+```
 
