@@ -196,7 +196,7 @@ var_plot <- function(va, vb, na, nb, alpha=0.05,
 
 ```
 
-Codi font del document: [Github](https://github.com/dessipat/Mentoria/tree/main/Infer%C3%A8ncia%20I)
+Codi font del document: [dubtes.Rmd](https://github.com/dessipat/Mentoria/tree/main/Infer%C3%A8ncia%20I)
 
 Recordatori regións de no rebuig (blanc) i de rebuig (gris) de $H_0$ en tests de comparació de paràmetres ($H_a$ fa referència a la hipòtesi alternativa, en el nostre cas $H_1$)
 <a id="fig1"></a>

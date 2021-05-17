@@ -1,0 +1,147 @@
+---
+title: "Sessió 09"
+subtitle: 'Regressió lineal Simple i ANOVA'
+author: "Jordi Tur"
+date: "Última actualització: `r format(Sys.time(), '%d/%m/%Y')`"
+output:
+  #  pdf_document:
+  #    toc: true
+  #    latex_engine: pdflatex
+  html_document:
+    toc: true
+    toc_float: true
+---
+  
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+#install.packages("readxl")
+require(readxl)
+dades <- data.frame(read_excel("CAT_PrimerTrimestre2019.xlsx"))
+```
+Codi font del document: [sessió_09.Rmd](https://github.com/dessipat/Mentoria/tree/main/Infer%C3%A8ncia%20I)
+
+## Gràfic de dispersió (I)
+
+Gràfic de dispersió entre la despesa el transport del viatge i la despesa en bars i restaurants (4 primeres dades del dataframe):
+
+
+```{r fig.asp = .75, fig.align="center"}
+head(dades[, c("GASTOFI_TRANS", "GASTOFI_BAREST")], 4)
+with(dades[1:4, ], plot(GASTOFI_TRANS, GASTOFI_BAREST, pch = 18, col="tomato3", cex = 1.5))
+grid()
+```
+
+## Gràfic de dispersió (II)
+
+Gràfic de dispersió entre la despesa el transport del viatge i la despesa en bars i restaurants(totes les dades del dataframe):
+
+
+```{r fig.asp = .75, fig.align="center"}
+with(dades, plot(GASTOFI_TRANS, GASTOFI_BAREST, col="blue", cex = 0.75))
+grid()
+```
+
+Gràfic de dispersió l’edat i la depesa total del viatge:
+```{r fig.asp = .75, fig.align="center"}
+with(dades, plot(EDAD, GASTOFI_TOTAL, col="blue", cex = 0.75))
+grid()
+```
+
+## Model de Regresió Lineal Simple
+
+Resolució d’un exemple: Trobeu el model de regressió lineal simple de les segúents dades després d’haver
+aplicat la transformació logarítimica a la variable Sesiones
+```{r fig.asp = .75, fig.align="center"}
+ex1 <- data.frame(sesiones = c(2, 5, 7, 10, 12, 16),
+                  coordinacion = c(15, 40, 62, 86, 92, 95))
+ex1$ln.sesiones <- log(ex1$sesiones)
+fit <- lm(coordinacion ~ ln.sesiones, data = ex1)
+summary(fit)
+```
+
+Així doncs, la fòrmula del model és: 
+<center>
+Coordinació =
+`r round(fit$coefficients[1], 3)` + 
+`r round(fit$coefficients[2], 3)` * ln(Sesiones) + Error
+</center>
+
+## Homogeneïtat de poblacions
+
+### Exemple 1
+Supongamos que se pretende contrastar si la distribución de tipos sanguíneos es igual en hombres que en mujeres, para lo que se efectua un análisis de sangre a 12000 personas, 7000 mujeres y 5000 hombres, teniendo los siguientes resultados:
+
+```{r fig.asp = .75, fig.align="center"}
+(obs <- matrix(c(2400, 1900, 700,
+                3100, 2700, 1200), byrow = TRUE, nrow = 2,
+              dimnames = list( c("Hombres", "Mujeres"), c("Tipo A", "Tipo B", "Tipo 0"))) )
+```
+
+Si las muestras fuesen homogéneas, como afirma la hipótesis nula, la mejor estimación de personas con sangre tipo A en la población, sería la obtenida a partir de toadas las observaciones musestrales con independencia d si la sangre fue extraída de un hombre o de una mujer. Así las proporciones estimadas de personas con sangre tipo A, tipo B y tipo 0 serían, respectavamente:
+
+```{r fig.asp = .75, fig.align="center"}
+colSums(obs) / sum(obs)
+```
+
+Entonces, esperaríamos encontrar en nuestra muestra (teóricamente) que un número de 0.4583 * 5000 = 2291.5 hombres.
+
+```{r fig.asp = .75, fig.align="center"}
+(teo <- c(5000, 7000) %*% t( colSums(obs) / sum(obs) ))
+```
+
+Y el estadístico chi-cuadrado:
+
+$$\chi^2 = \sum ^k_{i=1} \frac{O_i-T_i}{O_i}$$
+
+```{r fig.asp = .75, fig.align="center", results="hold"}
+(X2 <- sum( (obs - teo )^2 / obs ) )
+```
+
+Veiem el valor crític amb significància al 95\% i al 99\%:
+```{r fig.asp = .75, fig.align="center", results="hold"}
+alpha <- 0.05
+qchisq(1-alpha, df = (NROW(obs)-1)*(NCOL(obs)-1))
+alpha <- 0.01 
+qchisq(1-alpha, df = (NROW(obs)-1)*(NCOL(obs)-1))
+
+```
+
+que compara las frecuencias observadas $O_i$ con las frecuencias teóricas $T_i$ exced de 5.991 y de 9.210, que son los valores críticos de una chi-cuadrado con (3-1)*(2-1) grados de libertad, lo que nos lleva a rechazar la hipótesis de homogeneidad en la distribución de tipos sangíneos entre hombres y mujeres.
+
+### Exemple 2
+La tabla siguiente proporciona los alumnos matriculados por sexos en una muestra de facultades de ciencias económicas y empresariales en el curso 85/86. ¿Es distinta la proporción de mujeres en las distintas universiades?
+
+```{r fig.asp = .75, fig.align="center"}
+(obs <- matrix(c(1394, 1558, 2142, 6854, 5583, 10458,
+                  515,  594,  609, 2140, 2309, 3919), byrow = TRUE, nrow = 2,
+              dimnames = list( c("Hombres", "Mujeres"),
+                               c("Alcalá", "ALicante", "Barna A", "Barna C", "Mad A", "Mad C"))) )
+```
+
+Suponiendo homogeneidad en las facultades, la mejor estimación de la proporción de mujeres (y hombres) es:
+
+```{r fig.asp = .75, fig.align="center"}
+rowSums(obs) / sum(obs)
+```
+
+Entonces, esperaríamos encontrar en nuestra muestra teoricamente:
+
+```{r fig.asp = .75, fig.align="center"}
+(teo <- rowSums(obs) %*% t( colSums(obs) / sum(obs) ))
+```
+
+Y el estadístico chi-cuadrado serà:
+
+$$\chi^2 = \sum ^k_{i=1} \frac{O_i-T_i}{O_i}$$
+
+```{r fig.asp = .75, fig.align="center", results="hold"}
+(X2 <- sum( (obs - teo )^2 / obs ) ) # sense perdre decimals
+alpha <- 0.05
+qchisq(1-alpha, df = (NROW(obs)-1)*(NCOL(obs)-1))
+alpha <- 0.01 
+qchisq(1-alpha, df = (NROW(obs)-1)*(NCOL(obs)-1))
+```
+
+y, si la hipótesis de homogeneidad es cierta, correponde a una $\chi^2$ con 5 ( (6-1)*(2-1) ) grados de libertad. Como este valor no puede venir de dicha distribución (valor muy extremo), rechazamos la hipótesis de homogeneidad y concluimos que hay diferencias significativas entre las universidades. En las universidades de Barcelona, la proporción de Mujeres es algo menor (0.23) que en el resto (0.27).
+
+
