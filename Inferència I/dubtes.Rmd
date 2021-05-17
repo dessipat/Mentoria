@@ -3,6 +3,9 @@ title: "Dubtes Inferència 1"
 author: "Jordi Tur"
 date: "Última actualització: `r format(Sys.time(), '%d/%m/%Y')`"
 output:
+  pdf_document:
+    toc: true
+    latex_engine: pdflatex
   html_document:
     toc: true
     toc_float: true
@@ -193,6 +196,8 @@ var_plot <- function(va, vb, na, nb, alpha=0.05,
 
 ```
 
+Codi font del document: [Github](https://github.com/user/repo/blob/branch/other_file.md)
+
 Recordatori regións de no rebuig (blanc) i de rebuig (gris) de $H_0$ en tests de comparació de paràmetres ($H_a$ fa referència a la hipòtesi alternativa, en el nostre cas $H_1$)
 <a id="fig1"></a>
 <div align="center">
@@ -212,7 +217,7 @@ An investor wants to compare the risks associated to two different stocks, A and
 </center>
 
 Assuming that both samples come from two Normal and independent populations, does the data support
-the investor’s belief ? (α = 0.05)
+the investor’s belief ? ($\alpha$ = 0.05)
 
 Definim les hipòtesis primer. Com que el risc es mesura utilitzant la variància, el que volem veure és si la variància del stock del Market A és més petita que la variància del stock del Market B:
 
@@ -452,7 +457,7 @@ $[ 0, F_{na -1, nb -1, alpha/2} ]$ i $[F_{na -1, nb -1, 1-alpha/2},  +\infty  ]$
 
 A consumer association wants to compare several alkaline battery brands. Two random samples , both of size 50, corresponding to the two main brands in the market (sample A and sample B) are obtained. Each element in each sample is plugged into an electronic device to measure its lifespan. Assume that the lifespan of batteries follows a Normal distribution and that the samples were drawn independently. The sample mean for the lifespan of the batteries in samples A and B were 41 and 45 hours respectively, and the standard deviations 2 and 1.8 hours respectively. Answer the following questions:
 
-a. Can we infer from the information gathered that the batteries of brand B have a lifespan with less variability? (use a significance level of α = 0.05)
+a. Can we infer from the information gathered that the batteries of brand B have a lifespan with less variability? (use a significance level of $\alpha$ = 0.05)
 
 <div align="center">
 $H_0: \ \sigma^2_A \le \sigma^2_B$  
